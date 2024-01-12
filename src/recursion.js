@@ -141,16 +141,66 @@ let palindrome = function(string) {
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 let modulo = function(x, y) {
+  if (y === 0) {
+    return NaN;
+  }
+  if (y < 0) {
+    y = -y;
+  }
+  if (x < 0) {
+    if (x > -y) {
+      return x;
+    }
+    return modulo(x + y, y);
+  }
+  if (x < y) {
+    return x;
+  }
+  return modulo(x - y, y);
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
 let multiply = function(x, y) {
+  if (y === 0) {
+    return 0;
+  }
+  if (y < 0) {
+    x = -x;
+    y = -y;
+  }
+  if (y === 1) {
+    return x;
+  }
+  return multiply(x, y - 1) + x;
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
 let divide = function(x, y) {
+  if (y === 0) {
+    if (x === 0) {
+      return NaN;
+    }
+    if (x < 0) {
+      return -Infinity;
+    }
+    return Infinity;
+  }
+  if (y < 0) {
+    x = -x;
+    y = -y;
+  }
+  if (x < 0) {
+    if (-x < y) {
+      return 0;
+    }
+    return (divide(x + y, y) + 1);
+  }
+  if (x < y) {
+    return 0;
+  }
+  return (divide(x - y, y) + 1);
 };
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
@@ -159,6 +209,16 @@ let divide = function(x, y) {
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 let gcd = function(x, y) {
+  if (x < 0 || y < 0) {
+    return null;
+  }
+  if (x === 0) {
+    return y;
+  }
+  if (y === 0) {
+    return x;
+  }
+  return gcd(y, x % y);
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
@@ -166,21 +226,51 @@ let gcd = function(x, y) {
 // compareStr('house', 'houses') // false
 // compareStr('tomato', 'tomato') // true
 let compareStr = function(str1, str2) {
+  if (str1.length === 0) {
+    if (str2.length === 0) {
+      return true;
+    }
+    return false;
+  }
+  if (str1[0] !== str2[0]) {
+    return false;
+  }
+  return compareStr(str1.slice(1), str2.slice(1));
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
 let createArray = function(str) {
+  if (str.length === 0) {
+    return [];
+  }
+  var resultArray = createArray(str.slice(1));
+  resultArray.unshift(str[0]);
+  return resultArray;
 };
 
 // 17. Reverse the order of an array
 let reverseArr = function(array) {
+  console.log(array);
+  if (array.length === 0) {
+    return [];
+  }
+  var resultArray = reverseArr(array.slice(1));
+  resultArray.push(array[0]);
+  console.log(resultArray);
+  return resultArray;
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 let buildList = function(value, length) {
+  if (length <= 0) {
+    return [];
+  }
+  var resultArray = buildList(value, length - 1);
+  resultArray.push(value);
+  return resultArray;
 };
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
@@ -189,17 +279,47 @@ let buildList = function(value, length) {
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
 let fizzBuzz = function(n) {
+  if (n <= 0) {
+    return [];
+  }
+  var currentValue = '' + n;
+  if (n % 3 === 0) {
+    currentValue = 'Fizz';
+  }
+  if (n % 5 === 0) {
+    currentValue = 'Buzz';
+  }
+  if (n % 3 === 0 && n % 5 === 0) {
+    currentValue = 'FizzBuzz';
+  }
+  var resultArray = fizzBuzz(n-1);
+  resultArray.push(currentValue);
+  return resultArray;
 };
 
 // 20. Count the occurrence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
 let countOccurrence = function(array, value) {
+  if (array.length === 0) {
+    return 0;
+  }
+  var result = countOccurrence(array.slice(1), value);
+  if (array[0] === value) {
+    result ++;
+  }
+  return result;
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 let rMap = function(array, callback) {
+  if (array.length === 0) {
+    return [];
+  }
+  var resultArray = rMap(array.slice(1), callback);
+  resultArray.unshift(callback(array[0]));
+  return resultArray;
 };
 
 // 22. Write a function that counts the number of times a key occurs in an object.
@@ -207,6 +327,16 @@ let rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 let countKeysInObj = function(obj, key) {
+  var count = 0;
+  for (keyChecked in obj) {
+    if (keyChecked === key) {
+      count ++;
+    }
+    if (typeof obj[keyChecked] === 'object') {
+      count += countKeysInObj(obj[keyChecked], key);
+    }
+  }
+  return count;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -247,6 +377,15 @@ let replaceKeysInObj = function(obj, oldKey, newKey) {
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
 let fibonacci = function(n) {
+  if (n <= 0) {
+    return null;
+  }
+  if (n === 1) {
+    return [0 , 1];
+  }
+  var resultArray = fibonacci(n - 1);
+  resultArray.push(resultArray[resultArray.length - 1] + resultArray[resultArray.length - 2]);
+  return resultArray;
 };
 
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
@@ -255,6 +394,16 @@ let fibonacci = function(n) {
 // nthFibo(7); // 13
 // nthFibo(3); // 2
 let nthFibo = function(n) {
+  if (n < 0) {
+    return null;
+  }
+  if (n === 0) {
+    return 0;
+  }
+  if (n === 1) {
+    return 1;
+  }
+  return nthFibo(n - 1) + nthFibo(n - 2);
 };
 
 // 27. Given an array of words, return a new array containing each word capitalized.
