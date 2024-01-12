@@ -251,13 +251,11 @@ let createArray = function(str) {
 
 // 17. Reverse the order of an array
 let reverseArr = function(array) {
-  console.log(array);
   if (array.length === 0) {
     return [];
   }
   var resultArray = reverseArr(array.slice(1));
   resultArray.push(array[0]);
-  console.log(resultArray);
   return resultArray;
 };
 
@@ -410,11 +408,24 @@ let nthFibo = function(n) {
 // let words = ['i', 'am', 'learning', 'recursion'];
 // capitalizedWords(words); // ['I', 'AM', 'LEARNING', 'RECURSION']
 let capitalizeWords = function(array) {
+  if (array.length === 0) {
+    return [];
+  }
+  var resultArray = capitalizeWords(array.slice(1));
+  resultArray.unshift(array[0].toUpperCase());
+  return resultArray;
 };
 
 // 28. Given an array of strings, capitalize the first letter of each index.
 // capitalizeFirst(['car','poop','banana']); // ['Car','Poop','Banana']
 let capitalizeFirst = function(array) {
+  if (array.length === 0) {
+    return [];
+  }
+  var resultArray = capitalizeFirst(array.slice(1));
+  var currentString = array[0][0].toUpperCase() + array[0].slice(1);
+  resultArray.unshift(currentString);
+  return resultArray;
 };
 
 // 29. Return the sum of all even numbers in an object containing nested objects.
@@ -427,11 +438,30 @@ let capitalizeFirst = function(array) {
 // };
 // nestedEvenSum(obj1); // 10
 let nestedEvenSum = function(obj) {
+  var sum = 0;
+  for (var key in obj) {
+    if (typeof obj[key] === 'number' && obj[key] % 2 === 0) {
+      sum += obj[key];
+    }
+    if (typeof obj[key] === 'object') {
+      sum += nestedEvenSum(obj[key]);
+    }
+  }
+  return sum;
 };
 
 // 30. Flatten an array containing nested arrays.
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 let flatten = function(array) {
+  var resultArray = [];
+  array.forEach(function(item) {
+    if (Array.isArray(item)) {
+      resultArray = resultArray.concat(flatten(item));
+    } else {
+      resultArray.push(item);
+    }
+  });
+  return resultArray;
 };
 
 // 31. Given a string, return an object containing tallies of each letter.
